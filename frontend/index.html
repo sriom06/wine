@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Selection</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
+        .container { width: 300px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; display: none; background: white; }
+        input { width: 100%; margin: 10px 0; padding: 8px; }
+        button { width: 100%; padding: 10px; background-color: brown; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: darkred; }
+        .home { background: url('download.jpg') no-repeat center center/cover; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .home button { margin: 10px; padding: 15px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="home" id="homePage">
+        <h1>Welcome to Wine Selection</h1>
+        <button onclick="showLogin()">Login</button>
+        <button onclick="showSignup()">Sign Up</button>
+    </div>
+    
+    <div class="container" id="loginContainer">
+        <h2>Login</h2>
+        <input type="text" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button onclick="login()">Login</button>
+    </div>
+    
+    <div class="container" id="signupContainer">
+        <h2>Sign Up</h2>
+        <input type="text" id="signupEmail" placeholder="Email" required>
+        <input type="password" id="signupPassword" placeholder="Password" required>
+        <button onclick="signup()">Sign Up</button>
+    </div>
+
+    <script>
+        function showSignup() {
+            document.getElementById("homePage").style.display = "none";
+            document.getElementById("loginContainer").style.display = "none";
+            document.getElementById("signupContainer").style.display = "block";
+        }
+
+        function showLogin() {
+            document.getElementById("homePage").style.display = "none";
+            document.getElementById("signupContainer").style.display = "none";
+            document.getElementById("loginContainer").style.display = "block";
+        }
+
+        async function signup() {
+            let email = document.getElementById("signupEmail").value;
+            let password = document.getElementById("signupPassword").value;
+            if (!email || !password) {
+                alert("Please fill in all fields");
+                return;
+            }
+            let response = await fetch("http://127.0.0.1:5000/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+            let result = await response.json();
+            alert(result.message);
+            if (response.status === 200) {
+                goToHomePage();
+            }
+        }
+
+        async function login() {
+            let email = document.getElementById("loginEmail").value;
+            let password = document.getElementById("loginPassword").value;
+            let response = await fetch("http://127.0.0.1:5000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+            let result = await response.json();
+            alert(result.message);
+            if (response.status === 200) {
+                window.location.href = "main.html";
+            }
+        }
+    </script>
+</body>
+</html>
